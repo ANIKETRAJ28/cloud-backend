@@ -5,11 +5,16 @@ const User = require("./model/user");
 const Todo = require("./model/todo");
 const { PORT } = require("./config/env");
 const connectDB = require("./db");
+const cors = require("cors");
 
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(cors({
+    origin: 'http://localhost:5173'
+}));
 
 app.get("/", (req, res) => {
     return res.json({message: "Healthy..."});
@@ -43,28 +48,30 @@ app.get("/user", async (req, res) => {
 
 // add todo for user
 app.post("/todo", async (req, res) => {
-    const payload = {};
-    payload.name = req.body.name;
-    payload.todoName = req.body.todoName;
+    // const payload = {};
+    // payload.name = req.body.name
+    // payload.todoName = req.body.todoName;
     
     const newTodo = await Todo.create({
-        name: payload.todoName
+        name: req.body.todoName
     });
-    await User.findOneAndUpdate(
-        { name: payload.name },
-        { $push: { todos: newTodo._id } }
-    );
+    // await User.findOneAndUpdate(
+    //     { name: payload.name },
+    //     { $push: { todos: newTodo._id } }
+    // );
     return res.status(200).json(newTodo);
 });
 
 // get all todos for user
-app.get("/todo", async (req, res) => {
-    const payload = {};
-    payload.id = req.body.id;
+app.get("/todos", async (req, res) => {
+    // const payload = {};
+    // payload.id = req.body.id;
 
-    const user = await User.findById(payload.id).populate("todos");
+    // const user = await User.findById(payload.id).populate("todos");
 
-    return res.status(200).json(user.todos);
+    const todos = await Todo.find();
+
+    return res.status(200).json(todos);
 });
 
 app.listen(PORT, async() => {
