@@ -74,7 +74,7 @@ app.get("/todos", async (req, res) => {
     return res.status(200).json(todos);
 });
 
-app.listen(PORT, async() => {
+app.listen(3000, async() => {
     await connectDB();
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port 3000`);
 });
